@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OraxOS Settings</title>
+<style>
+body {
+  background:#0a0a0a;
+  color:white;
+  font-family:Segoe UI, sans-serif;
+  padding:10px;
+}
+h2 {
+  color:#00fff7;
+  margin-bottom:10px;
+}
+.wallpaper-list {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.wallpaper-list img {
+  width:100px;
+  height:60px;
+  object-fit:cover;
+  cursor:pointer;
+  border:2px solid #00fff7;
+  border-radius:5px;
+  transition:0.2s;
+}
+.wallpaper-list img:hover {
+  transform:scale(1.1);
+  border-color:#ff00ff;
+}
+</style>
+</head>
+<body>
+<h2>Schimbă fundalul OraxOS</h2>
+<div class="wallpaper-list">
+  <img src="background.jpg" onclick="changeBG(this.src)">
+  <img src="background2.jpg" onclick="changeBG(this.src)">
+  <img src="background3.jpg" onclick="changeBG(this.src)">
+</div>
+
+<script>
+function changeBG(src) {
+  // Comunicăm cu fereastra părinte
+  window.opener.document.body.style.background = `url('${src}') center/cover no-repeat`;
+}
+</script>
+</body>
+</html>

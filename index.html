@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OraxOS</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:Segoe UI, sans-serif; }
+
+body {
+  height:100vh;
+  background:url("background.jpg") center/cover no-repeat;
+  overflow:hidden;
+}
+
+/* TASKBAR */
+#taskbar {
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:60px;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(12px);
+  display:flex;
+  align-items:center;
+  padding:0 10px;
+  gap:10px;
+}
+
+/* ICONS */
+.task-icon {
+  width:40px;
+  height:40px;
+  cursor:pointer;
+}
+.task-icon img {
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+/* WINDOW */
+.window {
+  position:absolute;
+  width:700px;
+  height:400px;
+  background:#0a0a0a;
+  border:2px solid #00fff7;
+  border-radius:10px;
+  box-shadow:0 0 25px #00fff7;
+  resize:both;
+  overflow:hidden;
+}
+
+.window.fullscreen {
+  z-index:9999 !important;
+}
+
+.window-header {
+  height:35px;
+  background:linear-gradient(90deg,#00fff7,#0066ff);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 10px;
+  cursor:move;
+}
+
+.window-header span {
+  font-weight:bold;
+  color:white;
+}
+
+.close-btn, .max-btn {
+  cursor:pointer;
+  font-size:18px;
+  margin-left:8px;
+}
+
+.window iframe {
+  width:100%;
+  height:calc(100% - 35px);
+  border:none;
+}
+</style>
+</head>
+
+<body>
+
+<div id="taskbar">
+  <div class="task-icon" onclick="openApp('YouTube','https://www.youtube.com')">
+    <img src="icons/youtube.png">
+  </div>
+  <div class="task-icon" onclick="openApp('Instagram','https://www.instagram.com')">
+    <img src="icons/instagram.png">
+  </div>
+  <div class="task-icon" onclick="openApp('TikTok','https://www.tiktok.com')">
+    <img src="icons/tiktok.png">
+  </div>
+  <div class="task-icon" onclick="openApp('Facebook','https://www.facebook.com')">
+    <img src="icons/facebook.png">
+  </div>
+  <div class="task-icon" onclick="openApp('Microsoft 365','https://www.office.com')">
+    <img src="icons/office.png">
+  </div>
+  <div class="task-icon" onclick="openApp('Chrome','https://google.com')">
+    <img src="icons/chrome.png">
+  </div>
+  <div class="task-icon" onclick="openApp('Settings','settings.html')">
+    <img src="icons/settings.png">
+  </div>
+</div>
+
+<script>
+let z = 1;
+
+function openApp(title, url) {
+  const win = document.createElement("div");
+  win.className = "window";
+  win.style.top = "80px";
+  win.style.left = "80px";
+  win.style.zIndex = z++;
+
+  win.innerHTML = `
+    <div class="window-header">
+      <span>${title}</span>
+      <div>
+        <span class="max-btn" onclick="toggleFullscreen(this)">🗖</span>
+        <span class="close-btn" onclick="this.closest('.window').remove()">✖</span>
+      </div>
+    </div>
+    <iframe src="${url}"></iframe>
+  `;
+
+  document.body.appendChild(win);
+  dragWindow(win);
+}
+
+function dragWindow(win) {
+  const header = win.querySelector(".window-header");
+  let offsetX = 0, offsetY = 0, dragging = false;
+
+  header.onmousedown = e => {
+    if(e.target.classList.contains("close-btn") || e.target.classList.contains("max-btn")) return;
+    dragging = true;
+    offsetX = e.clientX - win.offsetLeft;
+    offsetY = e.clientY - win.offsetTop;
+    win.style.zIndex = z++;
+  };
+
+  document.onmousemove = e => {
+    if (!dragging) return;
+    win.style.left = (e.clientX - offsetX) + "px";
+    win.style.top = (e.clientY - offsetY) + "px";
+  };
+
+  document.onmouseup = () => dragging = false;
+}
+
+function toggleFullscreen(btn) {
+  const win = btn.closest(".window");
+
+  if (!win.classList.contains("fullscreen")) {
+    // Salvează poziția și dimensiunea veche
+    win.dataset.oldWidth = win.style.width;
+    win.dataset.oldHeight = win.style.height;
+    win.dataset.oldTop = win.style.top;
+    win.dataset.oldLeft = win.style.left;
+
+    // Setează fullscreen
+    win.classList.add("fullscreen");
+    win.style.top = "0";
+    win.style.left = "0";
+    win.style.width = "100vw";
+    win.style.height = "calc(100vh - 60px)"; // taskbar vizibil
+  } else {
+    // Revine la dimensiunea inițială
+    win.classList.remove("fullscreen");
+    win.style.width = win.dataset.oldWidth;
+    win.style.height = win.dataset.oldHeight;
+    win.style.top = win.dataset.oldTop;
+    win.style.left = win.dataset.oldLeft;
+  }
+}
+</script>
+
+</body>
+</html>
+
+  <div class="task-icon" onclick="openApp('Instagram','https://www.instagram.com')">
+    <img src="icons/instagram.png">
+  </div>
+  <div class="task-icon" onclick="openApp('TikTok','https://www.tiktok.com')">
+    <img src="icons/tiktok.png">
+  </div>
+  <div class="task-icon" onclick="openApp('Facebook','https://www.facebook.com')">
+    <img src="icons/facebook.png">
+  </div>
+  <div class="task-icon" onclick="openApp('Microsoft 365','https://www.office.com')">
+    <img src="icons/office.png">
+  </div>
+  <div class="task-icon" onclick="openApp('Chrome','https://google.com')">
+    <img src="icons/chrome.png">
+  </div>
+  <div class="task-icon" onclick="openApp('Settings','settings.html')">
+    <img src="icons/settings.png">
+  </div>
+</div>
+
+<script>
+let z = 1;
+
+function openApp(title, url) {
+  const win = document.createElement("div");
+  win.className = "window";
+  win.style.top = "80px";
+  win.style.left = "80px";
+  win.style.zIndex = z++;
+
+  win.innerHTML = `
+    <div class="window-header">
+      <span>${title}</span>
+      <div class="close-btn" onclick="this.parentElement.parentElement.remove()">✖</div>
+    </div>
+    <iframe src="${url}"></iframe>
+  `;
+
+  document.body.appendChild(win);
+  dragWindow(win);
+}
+
+function dragWindow(win) {
+  const header = win.querySelector(".window-header");
+  let offsetX = 0, offsetY = 0, dragging = false;
+
+  header.onmousedown = e => {
+    dragging = true;
+    offsetX = e.clientX - win.offsetLeft;
+    offsetY = e.clientY - win.offsetTop;
+    win.style.zIndex = z++;
+  };
+
+  document.onmousemove = e => {
+    if (!dragging) return;
+    win.style.left = (e.clientX - offsetX) + "px";
+    win.style.top = (e.clientY - offsetY) + "px";
+  };
+
+  document.onmouseup = () => dragging = false;
+}
+</script>
+
+</body>
+</html>
